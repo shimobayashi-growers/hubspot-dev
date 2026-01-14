@@ -1,0 +1,11 @@
+{
+  "name": "hubspot-dev",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "devDependencies": {
+    "@vercel/node": "^3.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
