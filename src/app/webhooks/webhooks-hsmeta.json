@@ -3,7 +3,7 @@
   "type": "webhooks",
   "config": {
     "settings": {
-      "targetUrl": "https://example.com/webhook",
+      "targetUrl": "https://hubspot-dev-ecru.vercel.app/api/webhook/contact-created",
       "maxConcurrentRequests": 10
     },
     "subscriptions": {
@@ -11,32 +11,11 @@
         {
           "subscriptionType": "object.creation",
           "objectType": "contact",
-          "active": false
-        },
-        {
-          "subscriptionType": "object.propertyChange",
-          "objectType": "contact",
-          "propertyName": "firstname",
-          "active": false
+          "active": true
         }
       ],
-      "legacyCrmObjects": [
-        {
-          "subscriptionType": "contact.propertyChange",
-          "propertyName": "lastname",
-          "active": false
-        },
-        {
-          "subscriptionType": "contact.deletion",
-          "active": false
-        }
-      ],
-      "hubEvents": [
-        {
-          "subscriptionType": "contact.privacyDeletion",
-          "active": false
-        }
-      ]
+      "legacyCrmObjects": [],
+      "hubEvents": []
     }
   }
 }
