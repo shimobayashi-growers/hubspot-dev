@@ -14,12 +14,6 @@
           "active": true
         }
       ],
-      "forms": [
-        {
-          "subscriptionType": "form_submission.v2",
-          "active": true
-        }
-      ],
       "legacyCrmObjects": [],
       "hubEvents": []
     }
