@@ -15,12 +15,7 @@
         }
       ],
       "legacyCrmObjects": [],
-      "hubEvents": [
-        {
-          "subscriptionType": "form_submission",
-          "active": true
-        }
-      ]
+      "hubEvents": []
     }
   }
 }
