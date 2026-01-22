@@ -3,7 +3,7 @@
   "crons": [
     {
       "path": "/api/cron/check-form-submissions",
-      "schedule": "*/5 * * * *"
+      "schedule": "0 9 * * *"
     }
   ]
 }
