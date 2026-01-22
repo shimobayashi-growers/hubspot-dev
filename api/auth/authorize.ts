@@ -18,8 +18,14 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
-  // スコープ: oauth（必須）、forms（フォーム送信Webhook用）
-  const scopes = ['oauth', 'forms'];
+  // スコープ: HubSpotアプリ設定と一致させる
+  // oauth, crm.objects.contacts.read, crm.objects.contacts.write, forms
+  const scopes = [
+    'oauth',
+    'crm.objects.contacts.read',
+    'crm.objects.contacts.write',
+    'forms',
+  ];
 
   const authUrl = new URL('https://app.hubspot.com/oauth/authorize');
   authUrl.searchParams.set('client_id', CLIENT_ID);
