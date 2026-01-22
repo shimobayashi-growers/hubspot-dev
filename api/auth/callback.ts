@@ -1,5 +1,44 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { exchangeCodeForTokens } from '../../lib/hubspot/oauth';
+
+interface TokenResponse {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  token_type: string;
+}
+
+/**
+ * 認可コードをアクセストークンに交換
+ */
+async function exchangeCodeForTokens(params: {
+  code: string;
+  clientId: string;
+  clientSecret: string;
+  redirectUri: string;
+}): Promise<TokenResponse> {
+  const { code, clientId, clientSecret, redirectUri } = params;
+
+  const response = await fetch('https://api.hubapi.com/oauth/v1/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      grant_type: 'authorization_code',
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uri: redirectUri,
+      code,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Token exchange failed: ${response.status} - ${errorText}`);
+  }
+
+  return response.json() as Promise<TokenResponse>;
+}
 
 /**
  * OAuthコールバックエンドポイント
