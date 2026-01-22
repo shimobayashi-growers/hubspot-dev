@@ -14,7 +14,8 @@
       "requiredScopes": [
         "oauth",
         "crm.objects.contacts.read",
-        "crm.objects.contacts.write"
+        "crm.objects.contacts.write",
+        "forms"
       ],
       "optionalScopes": [],
       "conditionallyRequiredScopes": []
