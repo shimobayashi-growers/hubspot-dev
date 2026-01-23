@@ -209,7 +209,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       checkedAt: new Date(checkStartTime).toISOString(),
       cutoffTime: new Date(cutoffTime).toISOString(),
       debug: {
-        forms: forms.map((f) => ({ guid: f.guid, name: f.name })),
+        formsRaw: forms,
         submissions: debugSubmissions,
       },
     });
