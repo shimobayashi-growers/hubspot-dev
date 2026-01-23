@@ -169,9 +169,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const forms = await getFormsList(HUBSPOT_ACCESS_TOKEN);
     formsChecked = forms.length;
 
+    const debugSubmissions: Array<{ formName: string; submittedAt: number; submittedAtISO: string }> = [];
+
     for (const form of forms) {
       // 各フォームの最新送信を取得
       const submissions = await getFormSubmissions(form.guid, HUBSPOT_ACCESS_TOKEN, 50);
+
+      // デバッグ: 全送信を記録
+      for (const s of submissions) {
+        debugSubmissions.push({
+          formName: form.name,
+          submittedAt: s.submittedAt,
+          submittedAtISO: new Date(s.submittedAt).toISOString(),
+        });
+      }
 
       // 過去24時間以内の送信をフィルタ
       const newSubmissions = submissions.filter((s) => s.submittedAt > cutoffTime);
@@ -197,6 +208,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       newSubmissions: newSubmissionsCount,
       checkedAt: new Date(checkStartTime).toISOString(),
       cutoffTime: new Date(cutoffTime).toISOString(),
+      debug: {
+        forms: forms.map((f) => ({ guid: f.guid, name: f.name })),
+        submissions: debugSubmissions,
+      },
     });
   } catch (error) {
     console.error('Polling error:', error);
