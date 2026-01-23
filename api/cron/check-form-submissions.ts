@@ -17,7 +17,7 @@ interface FormSubmissionsResponse {
 }
 
 interface Form {
-  guid: string;
+  id: string;
   name: string;
 }
 
@@ -173,7 +173,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     for (const form of forms) {
       // 各フォームの最新送信を取得
-      const submissions = await getFormSubmissions(form.guid, HUBSPOT_ACCESS_TOKEN, 50);
+      const submissions = await getFormSubmissions(form.id, HUBSPOT_ACCESS_TOKEN, 50);
 
       // デバッグ: 全送信を記録
       for (const s of submissions) {
@@ -190,7 +190,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       for (const submission of newSubmissions) {
         const message = createFormSubmissionMessage({
           formName: form.name,
-          formId: form.guid,
+          formId: form.id,
           submittedAt: formatSubmittedAt(submission.submittedAt),
           pageUrl: submission.pageUrl || 'N/A',
           portalId: submission.portalId,
