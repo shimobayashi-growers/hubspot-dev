@@ -37,9 +37,8 @@ interface SlackMessage {
   blocks?: SlackBlock[];
 }
 
-// 最後にチェックした時刻を保存（メモリ内、再デプロイでリセット）
-// 本番環境ではKV/DBを使用することを推奨
-let lastCheckedAt: number = Date.now() - 5 * 60 * 1000; // 初回は5分前から
+// 過去24時間の送信をチェック（Cronが1日1回のため）
+const HOURS_TO_CHECK = 24;
 
 async function getFormsList(accessToken: string): Promise<Form[]> {
   const response = await fetch('https://api.hubapi.com/marketing/v3/forms/', {
@@ -161,6 +160,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const checkStartTime = Date.now();
+  const cutoffTime = checkStartTime - HOURS_TO_CHECK * 60 * 60 * 1000;
   let newSubmissionsCount = 0;
   let formsChecked = 0;
 
@@ -171,10 +171,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     for (const form of forms) {
       // 各フォームの最新送信を取得
-      const submissions = await getFormSubmissions(form.guid, HUBSPOT_ACCESS_TOKEN, 5);
+      const submissions = await getFormSubmissions(form.guid, HUBSPOT_ACCESS_TOKEN, 50);
 
-      // lastCheckedAt以降の送信をフィルタ
-      const newSubmissions = submissions.filter((s) => s.submittedAt > lastCheckedAt);
+      // 過去24時間以内の送信をフィルタ
+      const newSubmissions = submissions.filter((s) => s.submittedAt > cutoffTime);
 
       for (const submission of newSubmissions) {
         const message = createFormSubmissionMessage({
@@ -191,14 +191,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    // チェック時刻を更新
-    lastCheckedAt = checkStartTime;
-
     return res.status(200).json({
       success: true,
       formsChecked,
       newSubmissions: newSubmissionsCount,
       checkedAt: new Date(checkStartTime).toISOString(),
+      cutoffTime: new Date(cutoffTime).toISOString(),
     });
   } catch (error) {
     console.error('Polling error:', error);
